@@ -71,7 +71,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'pocDjango.wsgi.application'
+WSGI_APPLICATION = 'flautimDjango.wsgi.application'
 
 
 # Database
