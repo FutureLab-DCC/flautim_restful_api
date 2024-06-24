@@ -1,11 +1,16 @@
 from pymongo import MongoClient
+import yaml
 
-def get_db_handle(db_name='admin', host='localhost', port=27017, username='futurelab', password='futurelab'):
-
-    client = MongoClient(host=host,
-                    port=int(port),
-                    username=username,
-                    password=password
+def get_db_handle():
+    with open('config.yaml') as f:
+        try: 
+            config = yaml.safe_load(f)['mongodb']
+            client = MongoClient(host=config['host'],
+                    port=int(config['port']),
+                    username=config['username'],
+                    password=config['password']
                      )
-    db_handle = client[db_name]
-    return db_handle #, client
+            db_handle = client[config['db']]
+            return db_handle #, client
+        except Exception as ex:
+            raise ex

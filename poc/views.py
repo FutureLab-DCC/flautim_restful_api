@@ -3,7 +3,7 @@ from django.http import HttpResponse
 from .models import logs_collection
 import os
 import subprocess
-from poc.tasks import runExperiment_task
+from poc.tasks import runExperiment_task, stopExperiment_task, statusExperiment_task, deleteExperiment_task
 
 # Create your views here.
 
@@ -18,7 +18,31 @@ def index(request):
 def runExperiment(request):
     runExperiment_task.delay()
     records = {
-        "Test" : "Process requested"
+        "Call" : "Run"
     }
-    #time_collection.insert_one(records)
+    logs_collection.insert_one(records)
+    return render(request, "run.html", records)
+
+def stopExperiment(request):
+    stopExperiment_task.delay()
+    records = {
+        "Call" : "Stop"
+    }
+    logs_collection.insert_one(records)
+    return render(request, "run.html", records)
+
+def statusExperiment(request):
+    statusExperiment_task.delay()
+    records = {
+        "Call" : "Status"
+    }
+    logs_collection.insert_one(records)
+    return render(request, "run.html", records)
+
+def deleteExperiment(request):
+    deleteExperiment_task.delay()
+    records = {
+        "Call" : "Delete"
+    }
+    logs_collection.insert_one(records)
     return render(request, "run.html", records)
