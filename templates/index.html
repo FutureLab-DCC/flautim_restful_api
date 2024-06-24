@@ -1,0 +1,13 @@
+<h1>Logs</h1>
+<br>
+<div>
+    <a class="button" href='{% url "run" %}'>Iniciar experimento</a>
+</div>
+<br>
+<ul>
+    {% if Logs %}
+        <li>{{ Logs.0.message }}</li>
+    {% else %}
+        <li>Nenhum Log registrado.</li>
+    {% endif %}
+</ul>

@@ -1,0 +1,4 @@
+from django.db import models
+from utils import get_db_handle
+
+time_collection = get_db_handle()['PocTimes']
