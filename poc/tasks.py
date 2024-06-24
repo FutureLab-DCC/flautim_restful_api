@@ -1,14 +1,23 @@
 import os
-import subprocess
+from subprocess import PIPE, run
 from celery import shared_task
+from .models import logs_collection
+
+
+def exec(command):
+    result = run(command, stdout=PIPE, stderr=PIPE, universal_newlines=True, shell=True)
+    return result.stdout
 
 @shared_task()
 def runExperiment_task():
-    os.system("bash ./runExperiment.sh")
-
+    #os.system("bash ./runExperiment.sh")
+    records = { "call" : "experiment/run/" }
+    output = exec("./runExperiment.sh")
+    records["description"] = str(output)
+    logs_collection.insert_one(records)
 
 @shared_task()
-def stausExperiment_task():
+def statusExperiment_task():
     os.system("bash echo status")
 
 

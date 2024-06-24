@@ -13,13 +13,17 @@ def index(request):
     context = {
         "Logs" : logs
     }
-    return render(request, 'index.html', context) #HttpResponse("<h1>App is runing ...</h1>") 
+    return render(request, 'index.html', context) 
 
 def runExperiment(request):
-    runExperiment_task.delay()
-    records = {
-        "Call" : "Run"
-    }
+    records = { "call" : "experiment/run/" }
+    try:
+        runExperiment_task.delay()
+        records["status"] = "ok"
+    except Exception as ex:
+        records["status"] = "failed"
+        records["description"] = repr(ex)
+
     logs_collection.insert_one(records)
     return render(request, "run.html", records)
 
@@ -30,7 +34,7 @@ def stopExperiment(request):
     }
     logs_collection.insert_one(records)
     return render(request, "run.html", records)
-
+    
 def statusExperiment(request):
     statusExperiment_task.delay()
     records = {
