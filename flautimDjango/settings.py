@@ -39,7 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     # Apps
-    'poc',
+    'flautim',
     'rest_framework',
 ]
 
@@ -53,7 +53,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-ROOT_URLCONF = 'pocDjango.urls'
+ROOT_URLCONF = 'flautimDjango.urls'
 
 TEMPLATES = [
     {

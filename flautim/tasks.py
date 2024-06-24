@@ -1,8 +1,7 @@
 import os
 from subprocess import PIPE, run
 from celery import shared_task
-from .models import logs_collection
-
+from .models import log
 
 def exec(command):
     result = run(command, stdout=PIPE, stderr=PIPE, universal_newlines=True, shell=True)
@@ -11,10 +10,12 @@ def exec(command):
 @shared_task()
 def runExperiment_task():
     #os.system("bash ./runExperiment.sh")
-    records = { "call" : "experiment/run/" }
-    output = exec("./runExperiment.sh")
-    records["description"] = str(output)
-    logs_collection.insert_one(records)
+    log("{} started".format(command))
+    try:
+        output = exec("./runExperiment.sh")
+        log("{} finished: {}".format(command, output)
+    except Exception as ex:
+        log("{} finished with error: {}".format(command, repr(ex))
 
 @shared_task()
 def statusExperiment_task():

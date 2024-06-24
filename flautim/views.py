@@ -3,7 +3,7 @@ from django.http import HttpResponse
 from .models import logs_collection
 import os
 import subprocess
-from poc.tasks import runExperiment_task, stopExperiment_task, statusExperiment_task, deleteExperiment_task
+from flautim.tasks import runExperiment_task, stopExperiment_task, statusExperiment_task, deleteExperiment_task
 
 # Create your views here.
 
