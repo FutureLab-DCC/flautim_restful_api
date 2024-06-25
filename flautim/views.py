@@ -1,8 +1,5 @@
 from django.shortcuts import render
-from rest_framework.decorators import api_view, renderer_classes
-from rest_framework.renderers import JSONRenderer
-from rest_framework.response import Response
-from django.http import HttpResponse
+from django.http import JsonResponse
 from .models import log, logs_collection
 import os
 import subprocess
@@ -18,7 +15,6 @@ def index(request):
     }
     return render(request, 'index.html', context) 
 
-@renderer_classes([JSONRenderer])
 def runExperiment(request, id):
     log("experiment", id, "Service call experiment/run/{}".format(id))
     try:
@@ -28,9 +24,7 @@ def runExperiment(request, id):
         records = { "status": "error" , "details": repr(ex) }
         log("experiment", id, "experiment/run/{} failed: {}".format(id, repr(ex)))
 
-    return Response(records)
-
-    #return render(request, "run.html", records)
+    return JsonResponse(records)
 
 def stopExperiment(request, id):
     log("experiment", id, "Service call experiment/stop/{}".format(id))
@@ -38,10 +32,10 @@ def stopExperiment(request, id):
         stopExperiment_task.delay(id)
         records = { "status": "ok" }
     except Exception as ex:
-        records = { "status": "ok" }
+        records = { "status": "error" , "details": repr(ex) }
         log("experiment", id, "experiment/stop/{} failed: {}".format(id, repr(ex)))
 
-    return render(request, "run.html", records)
+    return JsonResponse(records)
     
 def statusExperiment(request, id):
     log("experiment", id, "Service call experiment/status/{}".format(id))
@@ -49,10 +43,10 @@ def statusExperiment(request, id):
         statusExperiment_task.delay(id)
         records = { "status": "ok" }
     except Exception as ex:
-        records = { "status": "ok" }
+        records = { "status": "error" , "details": repr(ex) }
         log("experiment", id, "experiment/status/{} failed: {}".format(id, repr(ex)))
 
-    return render(request, "run.html", records)
+    return JsonResponse(records)
 
 def deleteExperiment(request, id):
     log("experiment", id, "Service call experiment/delete/{}".format(id))
@@ -60,7 +54,7 @@ def deleteExperiment(request, id):
         deleteExperiment_task.delay(id)
         records = { "status": "ok" }
     except Exception as ex:
-        records = { "status": "ok" }
+        records = { "status": "error" , "details": repr(ex) }
         log("experiment", id, "experiment/delete/{} failed: {}".format(id, repr(ex)))
 
-    return render(request, "run.html", records)
+    return JsonResponse(records)
