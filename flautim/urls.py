@@ -3,8 +3,8 @@ from . import views
 
 urlpatterns = [
     path('', views.index, name="index"), # views.AllToDos.as_view(), name="index"),
-    path('experiment/run/', views.runExperiment, name="run"),
-    path('experiment/status/', views.statusExperiment, name="status"),
-    path('experiment/stop/', views.stopExperiment, name="stop"),
-    path('experiment/delete/', views.deleteExperiment, name="delete"),
+    path('experiment/run/<str:id>', views.runExperiment, name="run"),
+    path('experiment/status/<str:id>', views.statusExperiment, name="status"),
+    path('experiment/stop/<str:id>', views.stopExperiment, name="stop"),
+    path('experiment/delete/<str:id>', views.deleteExperiment, name="delete"),
 ]

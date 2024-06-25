@@ -15,46 +15,46 @@ def index(request):
     }
     return render(request, 'index.html', context) 
 
-def runExperiment(request):
-    log("Service call experiment/run/")
+def runExperiment(request, id):
+    log("experiment", id, "Service call experiment/run/{}".format(id))
     try:
-        runExperiment_task.delay()
+        runExperiment_task.delay(id)
         records = { "status": "ok" }
     except Exception as ex:
         records = { "status": "ok" }
-        log("experiment/run/ failed: {}".format(repr(ex)))
+        log("experiment", id, "experiment/run/{} failed: {}".format(id, repr(ex)))
 
     return render(request, "run.html", records)
 
-def stopExperiment(request):
-    log("Service call experiment/stop/")
+def stopExperiment(request, id):
+    log("experiment", id, "Service call experiment/stop/{}".format(id))
     try:
-        stopExperiment_task.delay()
+        stopExperiment_task.delay(id)
         records = { "status": "ok" }
     except Exception as ex:
         records = { "status": "ok" }
-        log("experiment/stop/ failed: {}".format(repr(ex)))
+        log("experiment", id, "experiment/stop/{} failed: {}".format(id, repr(ex)))
 
     return render(request, "run.html", records)
     
-def statusExperiment(request):
-    log("Service call experiment/status/")
+def statusExperiment(request, id):
+    log("experiment", id, "Service call experiment/status/{}".format(id))
     try:
-        statusExperiment_task.delay()
+        statusExperiment_task.delay(id)
         records = { "status": "ok" }
     except Exception as ex:
         records = { "status": "ok" }
-        log("experiment/status/ failed: {}".format(repr(ex)))
+        log("experiment", id, "experiment/status/{} failed: {}".format(id, repr(ex)))
 
     return render(request, "run.html", records)
 
-def deleteExperiment(request):
-    log("Service call experiment/delete/")
+def deleteExperiment(request, id):
+    log("experiment", id, "Service call experiment/delete/{}".format(id))
     try:
-        deleteExperiment_task.delay()
+        deleteExperiment_task.delay(id)
         records = { "status": "ok" }
     except Exception as ex:
         records = { "status": "ok" }
-        log("experiment/delete/ failed: {}".format(repr(ex)))
+        log("experiment", id, "experiment/delete/{} failed: {}".format(id, repr(ex)))
 
     return render(request, "run.html", records)
