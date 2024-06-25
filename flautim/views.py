@@ -1,4 +1,6 @@
 from django.shortcuts import render
+from rest_framework.renderers import JSONRenderer, renderer_classes
+from rest_framework.response import Response
 from django.http import HttpResponse
 from .models import log, logs_collection
 import os
@@ -15,16 +17,19 @@ def index(request):
     }
     return render(request, 'index.html', context) 
 
+@renderer_classes([JSONRenderer])
 def runExperiment(request, id):
     log("experiment", id, "Service call experiment/run/{}".format(id))
     try:
         runExperiment_task.delay(id)
         records = { "status": "ok" }
     except Exception as ex:
-        records = { "status": "ok" }
+        records = { "status": "error" , "details": repr(ex) }
         log("experiment", id, "experiment/run/{} failed: {}".format(id, repr(ex)))
 
-    return render(request, "run.html", records)
+    return Response(records)
+
+    #return render(request, "run.html", records)
 
 def stopExperiment(request, id):
     log("experiment", id, "Service call experiment/stop/{}".format(id))
