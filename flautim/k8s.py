@@ -4,8 +4,8 @@ import yaml
 def read_config(name):
     with open('config.yaml') as f:
         try: 
-            config = yaml.safe_load(f)[name]
-            return config
+            cfg = yaml.safe_load(f)[name]
+            return cfg
         except Exception as ex:
             raise ex
         
@@ -18,9 +18,9 @@ def get_mongo_config():
 
 def get_job_status(job_name):
     # Specify kubeconfig file
-    config = get_k8s_config()
-    kubeconfig_path = config['config_path']
-    namespace = config['namespace']
+    cfg = get_k8s_config()
+    kubeconfig_path = cfg['config_path']
+    namespace = cfg['namespace']
     config.load_kube_config(config_file=kubeconfig_path)
     
     # Create an instance of the BatchV1Api
@@ -45,9 +45,9 @@ def get_job_status(job_name):
         
 def delete_job(job_name):
     
-    config = get_k8s_config()
-    kubeconfig_path = config['config_path']
-    namespace = config['namespace']
+    cfg = get_k8s_config()
+    kubeconfig_path = cfg['config_path']
+    namespace = cfg['namespace']
     config.load_kube_config(config_file=kubeconfig_path)
 
     # Load the specified kubeconfig file
@@ -76,10 +76,10 @@ def delete_job(job_name):
 
 def create_job(job_name, id_experiment, user, path):
     # Load the specified kubeconfig file
-    config = get_k8s_config()
-    kubeconfig_path = config['config_path']
-    namespace = config['namespace']
-    pvc = config['pvc']
+    cfg = get_k8s_config()
+    kubeconfig_path = cfg['config_path']
+    namespace = cfg['namespace']
+    pvc = cfg['pvc']
     config.load_kube_config(config_file=kubeconfig_path)
 
     mongo_config = get_mongo_config()
@@ -116,7 +116,7 @@ def create_job(job_name, id_experiment, user, path):
     
     # Define the volumes
     volume = client.V1Volume(
-        name="my-pvc-nfs",
+        name=pvc,
         persistent_volume_claim=client.V1PersistentVolumeClaimVolumeSource(
             claim_name="experiment-pvc"
         )
