@@ -2,5 +2,7 @@ mongodb:
   host: 127.0.0.1
   port: 27017
   username: flautim
-  password: FuTuR3L@b
+  password: -------
   db: flautim
+kubernetes:
+  config_path: '~/.kube/config'

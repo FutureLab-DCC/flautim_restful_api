@@ -2,6 +2,7 @@ import os
 from subprocess import PIPE, run
 from celery import shared_task
 from .models import log
+from .k8s import create_job
 
 def exec(command):
     result = run(command, stdout=PIPE, stderr=PIPE, universal_newlines=True, shell=True)
@@ -22,7 +23,16 @@ def runExperiment_task(id):
 
 @shared_task()
 def statusExperiment_task(id):
-    task_base(id, "ls -la")
+    #task_base(id, "ls -la")
+    try:
+        status, response = create_job(id, id, 0, '/mnt')
+        if status:
+            log("experiment", id, "Task OK: {}".format(response))
+        else:
+            log("experiment", id, "Task FAILED: {}".format(response))
+    except Exception as ex:
+        log("experiment", id, "Task FAILED: {}".format(repr(ex)))
+
 
 
 @shared_task()
