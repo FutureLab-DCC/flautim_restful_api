@@ -2,7 +2,7 @@ import os
 from subprocess import PIPE, run
 from celery import shared_task
 from .models import log
-from .k8s import create_job
+import k8s  
 
 def exec(command):
     result = run(command, stdout=PIPE, stderr=PIPE, universal_newlines=True, shell=True)
@@ -16,28 +16,36 @@ def task_base(id, command):
     except Exception as ex:
         log("experiment", id, "{} finished with error: {}".format(command, repr(ex)))
 
+
+def request_status(status):
+    return "SUCCEED" if status else "FAILED"
+
+
 @shared_task()
 def runExperiment_task(id):
-    task_base(id, "bash ./runExperiment.sh")
+    try:
+        status, response = k8s.job_create(id, id, 0, '/mnt')
+        log("experiment_run", id, request_status(status), response)
+    except Exception as ex:
+        log("experiment_run", id, request_status(False), repr(ex))
     
 
 @shared_task()
 def statusExperiment_task(id):
-    #task_base(id, "ls -la")
     try:
-        status, response = create_job(id, id, 0, '/mnt')
-        if status:
-            log("experiment", id, "Task OK: {}".format(response))
-        else:
-            log("experiment", id, "Task FAILED: {}".format(response))
+        status, response = k8s.job_status(id)
+        log("experiment_status", id, request_status(status), response)
     except Exception as ex:
-        log("experiment", id, "Task FAILED: {}".format(repr(ex)))
-
+        log("experiment_status", id, request_status(False), repr(ex))
 
 
 @shared_task()
 def stopExperiment_task(id):
-    task_base(id, "ps -ax")
+    try:
+        status, response = k8s.job_delete(id)
+        log("experiment_delete", id, request_status(status), response)
+    except Exception as ex:
+        log("experiment_delete", id, request_status(False), repr(ex))
 
 
 @shared_task()

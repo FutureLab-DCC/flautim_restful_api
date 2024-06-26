@@ -16,7 +16,7 @@ def get_mongo_config():
     return read_config('mongodb')
 
 
-def get_job_status(job_name):
+def job_status(job_name):
     # Specify kubeconfig file
     cfg = get_k8s_config()
     kubeconfig_path = cfg['config_path']
@@ -32,23 +32,19 @@ def get_job_status(job_name):
         
         # Extract and print job status details
         status = job.status
-        print(f"Job '{job_name}' status:")
-        print(f"  Active: {status.active}")
-        print(f"  Succeeded: {status.succeeded}")
-        print(f"  Failed: {status.failed}")
 
-        return status
+        return True, status
 
     except client.exceptions.ApiException as e:
-        print(f"An error occurred: {e}")
-        return None
+        return False, repr(e)
+    except Exception as e:
+        return False, repr(e)
         
-def delete_job(job_name):
+def job_delete(job_name):
     
     cfg = get_k8s_config()
     kubeconfig_path = cfg['config_path']
     namespace = cfg['namespace']
-    config.load_kube_config(config_file=kubeconfig_path)
 
     # Load the specified kubeconfig file
     config.load_kube_config(config_file=kubeconfig_path)
@@ -66,15 +62,15 @@ def delete_job(job_name):
                 grace_period_seconds=0
             )
         )
-        print(f"Job '{job_name}' deleted successfully.")
-        return response
+        return True, response
 
     except client.exceptions.ApiException as e:
-        print(f"An error occurred: {e}")
-        return None
+        return False, repr(e)
+    except Exception as e:
+        return False, repr(e)
 
 
-def create_job(job_name, id_experiment, user, path):
+def job_create(job_name, id_experiment, user, path):
     # Load the specified kubeconfig file
     cfg = get_k8s_config()
     kubeconfig_path = cfg['config_path']
@@ -152,14 +148,11 @@ def create_job(job_name, id_experiment, user, path):
             body=job,
             namespace=namespace
         )
-        print(f"Job '{job_name}' created successfully.")
         return True, response
 
     except client.exceptions.ApiException as e:
-        print(f"An error occurred: {e}")
         return False, repr(e)
     except Exception as e:
-        print(f"An error occurred: {e}")
         return False, repr(e)
 
 
