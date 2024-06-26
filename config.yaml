@@ -6,3 +6,5 @@ mongodb:
   db: flautim
 kubernetes:
   config_path: '~/.kube/config'
+  namespace: default
+  pvc: my-pvc-nfs
