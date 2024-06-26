@@ -79,6 +79,7 @@ def create_job(job_name, id_experiment, user, path):
     config = get_k8s_config()
     kubeconfig_path = config['config_path']
     namespace = config['namespace']
+    pvc = config['pvc']
     config.load_kube_config(config_file=kubeconfig_path)
 
     mongo_config = get_mongo_config()
@@ -107,7 +108,7 @@ def create_job(job_name, id_experiment, user, path):
         image_pull_policy="Always",
         volume_mounts=[
             client.V1VolumeMount(
-                name="my-pvc-nfs",
+                name=pvc,
                 mount_path="/mnt"
             )
         ]
