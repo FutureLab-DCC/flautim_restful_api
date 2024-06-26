@@ -83,7 +83,7 @@ def job_create(job_name, id_experiment, user, path):
     dbpw = mongo_config['password']
     dbport = mongo_config['port']
     # Verify mongodb (ip)
-    dbip = mongo_config['hostname']
+    dbip = mongo_config['host']
 
     # Define the Job metadata
     metadata = client.V1ObjectMeta(name=job_name)
