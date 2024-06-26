@@ -40,7 +40,7 @@ def job_status(job_name):
     except Exception as e:
         return False, repr(e)
         
-def job_delete(job_name):
+def job_stop(job_name):
     
     cfg = get_k8s_config()
     kubeconfig_path = cfg['config_path']

@@ -2,7 +2,7 @@ import os
 from subprocess import PIPE, run
 from celery import shared_task
 from .models import log
-import k8s  
+from k8s import job_create, job_stop, job_status
 
 def exec(command):
     result = run(command, stdout=PIPE, stderr=PIPE, universal_newlines=True, shell=True)
@@ -24,8 +24,8 @@ def request_status(status):
 @shared_task()
 def runExperiment_task(id):
     try:
-        status, response = k8s.job_create(id, id, 0, '/mnt')
-        log("experiment_run", id, request_status(status), response)
+        status, response = job_create(id, id, 0, '/mnt')
+        log("experiment_run", id, request_status(status), repr(response))
     except Exception as ex:
         log("experiment_run", id, request_status(False), repr(ex))
     
@@ -33,8 +33,8 @@ def runExperiment_task(id):
 @shared_task()
 def statusExperiment_task(id):
     try:
-        status, response = k8s.job_status(id)
-        log("experiment_status", id, request_status(status), response)
+        status, response = job_status(id)
+        log("experiment_status", id, request_status(status), repr(response))
     except Exception as ex:
         log("experiment_status", id, request_status(False), repr(ex))
 
@@ -42,8 +42,8 @@ def statusExperiment_task(id):
 @shared_task()
 def stopExperiment_task(id):
     try:
-        status, response = k8s.job_delete(id)
-        log("experiment_delete", id, request_status(status), response)
+        status, response = job_stop(id)
+        log("experiment_delete", id, request_status(status), repr(response))
     except Exception as ex:
         log("experiment_delete", id, request_status(False), repr(ex))
 
