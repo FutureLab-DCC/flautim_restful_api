@@ -1,0 +1,1 @@
+python3 -m celery -A flautimDjango worker

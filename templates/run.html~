@@ -1,7 +1,0 @@
-<h1>Experiment completed</h1><br><br>
-
-<br><br>
-
-<div>
-    <a class="button" href='{% url "index" %}'>Lista geral</a>
-</div>
