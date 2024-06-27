@@ -2,19 +2,7 @@ import os
 from subprocess import PIPE, run
 from celery import shared_task
 from .models import log
-from k8s import job_create, job_stop, job_status
-
-def exec(command):
-    result = run(command, stdout=PIPE, stderr=PIPE, universal_newlines=True, shell=True)
-    return result.stdout
-
-def task_base(id, command):
-    log("experiment", id, "{} started".format(command))
-    try:
-        output = exec(command)
-        log("experiment", id, "{} finished: {}".format(command, output))
-    except Exception as ex:
-        log("experiment", id, "{} finished with error: {}".format(command, repr(ex)))
+from .k8s import job_create, job_stop, job_status
 
 
 def request_status(status):
@@ -50,4 +38,4 @@ def stopExperiment_task(id):
 
 @shared_task()
 def deleteExperiment_task(id):
-    task_base(id, "ls -la")
+    raise NotImplementedError("This request is not implemented yet")
