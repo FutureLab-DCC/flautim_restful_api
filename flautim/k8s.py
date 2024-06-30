@@ -1,5 +1,7 @@
 from kubernetes import client, config
 import yaml
+import urllib.parse
+
 
 def read_config(name):
     with open('config.yaml') as f:
@@ -76,6 +78,7 @@ def job_create(job_name, id_experiment, user, path):
     kubeconfig_path = cfg['config_path']
     namespace = cfg['namespace']
     pvc = cfg['pvc']
+    image = cfg['image']
     config.load_kube_config(config_file=kubeconfig_path)
 
     mongo_config = get_mongo_config()
@@ -91,14 +94,14 @@ def job_create(job_name, id_experiment, user, path):
     # Define the container
     container = client.V1Container(
         name="mnist-trainer-job",
-        image="sufex00/flautin:trainer-0.1",
+        image=image,
         args=[
             "--IDexperiment", id_experiment,
             "--user", str(user),
             "--path", path,
             "--dbserver", dbip,
-            "--dbuser", dbuser,
-            "--dbpw", dbpw,
+            "--dbuser", urllib.parse.quote_plus(dbuser),
+            "--dbpw", urllib.parse.quote_plus(dbpw),
             "--dbport", str(dbport)
         ],
         image_pull_policy="Always",
