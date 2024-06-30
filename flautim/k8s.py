@@ -114,7 +114,7 @@ def job_create(job_name, id_experiment, user, path):
     volume = client.V1Volume(
         name=pvc,
         persistent_volume_claim=client.V1PersistentVolumeClaimVolumeSource(
-            claim_name="experiment-pvc"
+            claim_name=pvc
         )
     )
     

@@ -12,7 +12,7 @@ def request_status(status):
 @shared_task()
 def runExperiment_task(id):
     try:
-        status, response = job_create(id, id, 0, '/mnt')
+        status, response = job_create(id, id, 0, '/mnt/{}'.format(id))
         log("experiment_run", id, request_status(status), repr(response))
     except Exception as ex:
         log("experiment_run", id, request_status(False), repr(ex))
