@@ -8,3 +8,4 @@ kubernetes:
   config_path: '~/.kube/config'
   namespace: default
   pvc: my-pvc-nfs
+  image: 'sufex00/flautin:trainer-0.1'
