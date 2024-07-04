@@ -74,17 +74,6 @@ TEMPLATES = [
 WSGI_APPLICATION = 'flautimDjango.wsgi.application'
 
 
-# Database
-# https://docs.djangoproject.com/en/4.1/ref/settings/#databases
-
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.sqlite3',
-#         'NAME': BASE_DIR / 'db.sqlite3',
-#     }
-# }
-
-
 # Password validation
 # https://docs.djangoproject.com/en/4.1/ref/settings/#auth-password-validators
 
@@ -129,3 +118,13 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # Celery settings
 CELERY_BROKER_URL = "redis://localhost:6379"
 CELERY_RESULT_BACKEND = "redis://localhost:6379"
+
+CORS_ORIGIN_ALLOW_ALL = True
+CORS_REPLACE_HTTPS_REFERER = True
+CSRF_TRUSTED_ORIGINS = [
+    'https://localhost',
+    'https://0.0.0.0:40001',
+    'https://0.0.0.0',
+]
+CORS_ALLOW_HEADERS = [ "accept", "referer", "accept-encoding", "authorization", "content-type", "dnt", "origin", "user-agent", "x-csrftoken", "x-sessionid", "x-requested-with"]
+CORS_EXPOSE_HEADERS = ['Set-Cookie']
