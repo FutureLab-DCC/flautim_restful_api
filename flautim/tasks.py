@@ -32,12 +32,13 @@ def statusExperiment_synchronous(id):
         status, response = job_status(id)
         ret = 'error'
         if status:
-            if response['active']:
+            if response.ready > 0 or response.active > 0:
                 ret = 'running'
-            if response['succeeded']:
+            elif response.succeeded > 0 or response.terminating > 0:
                 ret = 'finished'
-            if response['failed'] is not None:
+            elif response.failed> 0:
                 ret = 'aborted'
+
     except Exception as ex:
         status = False
         ret = 'error'
