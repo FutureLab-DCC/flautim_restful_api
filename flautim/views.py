@@ -3,7 +3,7 @@ from django.http import JsonResponse
 from .models import log, logs_collection
 import os
 import subprocess
-from flautim.tasks import runExperiment_task, stopExperiment_task, statusExperiment_task, deleteExperiment_task
+from flautim.tasks import runExperiment_task, stopExperiment_task, statusExperiment_task, deleteExperiment_task, statusExperiment_synchronous
 
 # Create your views here.
 
@@ -40,8 +40,9 @@ def stopExperiment(request, id):
 def statusExperiment(request, id):
     log("experiment", id, "Service call experiment/status/{}".format(id))
     try:
-        statusExperiment_task.delay(id)
-        records = { "status": "ok" }
+        #statusExperiment_task.delay(id)
+        status, ret, response = statusExperiment_synchronous(id)
+        records = { "status": ret , "details": repr(response) }
     except Exception as ex:
         records = { "status": "error" , "details": repr(ex) }
         log("experiment", id, "experiment/status/{} failed: {}".format(id, repr(ex)))

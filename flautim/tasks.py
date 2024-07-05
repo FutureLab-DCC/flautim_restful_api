@@ -27,6 +27,25 @@ def statusExperiment_task(id):
         log("experiment_status", id, request_status(False), repr(ex))
 
 
+def statusExperiment_synchronous(id):
+    try:
+        status, response = job_status(id)
+        ret = 'error'
+        if status:
+            if response['active']:
+                ret = 'running'
+            if response['succeeded']:
+                ret = 'finished'
+            if response['failed'] is not None:
+                ret = 'aborted'
+    except Exception as ex:
+        status = False
+        ret = 'error'
+        response = repr(ex)
+    
+    return (status, ret, response)
+
+
 @shared_task()
 def stopExperiment_task(id):
     try:
