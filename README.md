@@ -44,5 +44,21 @@ Seguindo esses simples passos, você poderá treinar seus modelos com colaboraç
 - *Como posso entrar em contato com o suporte do Flautim?*
     Se você tiver dúvidas ou precisar de ajuda, entre em contato com a equipe de suporte do Flautim através do email placeholder@email.com.
 
-- Erros comuns
+##  Erros comuns
+1. Sincronização de Pesos:
+    Problema: Inconsistência na atualização dos pesos dos modelos locais e globais.
+    Solução: Garantir que os pesos dos modelos locais sejam corretamente enviados ao servidor e que o servidor os agregue adequadamente antes de enviar os pesos globais atualizados de volta aos clientes.
+
+2. Heterogeneidade de Dados:
+    Problema: Diferenças significativas na distribuição de dados entre os clientes podem levar a modelos globais que não generalizam bem.
+    Solução: Implementar técnicas de balanceamento de dados ou ajuste de amostragem para garantir que os dados sejam mais uniformemente distribuídos entre os clientes.
+
+3. Configuração de Hiperparâmetros:
+    Problema: Escolha inadequada de hiperparâmetros pode resultar em convergência lenta ou sobreajuste/subajuste do modelo.
+    Solução: Realizar validação cruzada e ajuste de hiperparâmetros para encontrar as configurações ótimas para o treinamento federado.
+
+4. Incompatibilidade de Tamanho de Tensor:
+    Problema: Geralmente, diferença na arquitetura do modelo esperada ou nas dimensões de entrada entre as duas rodadas.
+    Solução: Garantir que todos os clientes no setup de aprendizado federado usem exatamente a mesma arquitetura de modelo e etapas de pré-processamento de dados, com processos consistentes de carregamento do modelo em todas as rodadas de treinamento. Garantir tamanhos de entrada e as configurações do modelo sejam idênticos ao inicializar o modelo para cada rodada.
+
 - Links para os exemplos
