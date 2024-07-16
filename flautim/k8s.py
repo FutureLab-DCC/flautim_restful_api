@@ -95,7 +95,8 @@ def job_create(job_name, id_experiment, user, path):
     container = client.V1Container(
         name="mnist-trainer-job",
         image=image,
-        command=["python3","{}/run.py".format(path)],
+        working_dir = path,
+        command=["python3","run.py"],
         args=[
             "--IDexperiment", id_experiment,
             "--user", str(user),
