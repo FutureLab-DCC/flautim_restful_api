@@ -95,6 +95,7 @@ def job_create(job_name, id_experiment, user, path):
     container = client.V1Container(
         name="mnist-trainer-job",
         image=image,
+        command=["python3","{}/run.py".format(path)],
         args=[
             "--IDexperiment", id_experiment,
             "--user", str(user),
@@ -104,6 +105,7 @@ def job_create(job_name, id_experiment, user, path):
             "--dbpw", urllib.parse.quote_plus(dbpw),
             "--dbport", str(dbport)
         ],
+        
         image_pull_policy="Always",
         volume_mounts=[
             client.V1VolumeMount(
