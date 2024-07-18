@@ -142,7 +142,8 @@ def job_create(job_name, id_experiment, user, path):
         api_version="batch/v1",
         kind="Job",
         metadata=metadata,
-        spec=job_spec
+        spec=job_spec,
+        ttl_seconds_after_finished = 10
     )
     
     # Create an instance of the BatchV1Api
