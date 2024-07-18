@@ -61,7 +61,7 @@ def job_stop(job_name):
             namespace=namespace,
             body=client.V1DeleteOptions(
                 propagation_policy='Foreground',
-                grace_period_seconds=0
+                grace_period_seconds=5
             )
         )
         return True, response
@@ -161,27 +161,3 @@ def job_create(job_name, id_experiment, user, path):
         return False, repr(e)
     except Exception as e:
         return False, repr(e)
-
-
-
-# get_status and delete variable
-job_name = 'mnist-trainer-0'
-data_path = '/mnt'
-id_experiment = 'Ex1'
-
-# Example usage
-#job_response = create_job(
-#    job_name=job_name,
-#    id_experiment=id_experiment,
-#    user=user,
-#    path=data_path,
-#    dbip = db_ip,
-#    dbuser=db_user,
-#    dbpw=db_user,
-#    dbport=db_port,
-#    kubeconfig_path=config_path
-#)
-
-
-#job_status = get_job_status(job_name, kubeconfig_path=config_path)
-#delete_response = delete_job(job_name, kubeconfig_path=config_path)
