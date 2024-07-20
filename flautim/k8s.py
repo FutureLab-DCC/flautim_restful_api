@@ -131,12 +131,11 @@ def job_create(job_name, id_experiment, user, path):
             restart_policy="Never",
             containers=[container],
             volumes=[volume]
-        ),
-        ttl_seconds_after_finished = 10
+        )    
     )
     
     # Define the Job spec
-    job_spec = client.V1JobSpec(template=template)
+    job_spec = client.V1JobSpec(template=template,  ttl_seconds_after_finished = 10)
     
     # Define the Job
     job = client.V1Job(
