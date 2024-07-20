@@ -131,7 +131,8 @@ def job_create(job_name, id_experiment, user, path):
             restart_policy="Never",
             containers=[container],
             volumes=[volume]
-        )
+        ),
+        ttl_seconds_after_finished = 10
     )
     
     # Define the Job spec
@@ -142,8 +143,7 @@ def job_create(job_name, id_experiment, user, path):
         api_version="batch/v1",
         kind="Job",
         metadata=metadata,
-        spec=job_spec,
-        ttl_seconds_after_finished = 10
+        spec=job_spec
     )
     
     # Create an instance of the BatchV1Api
