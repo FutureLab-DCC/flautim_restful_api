@@ -1,7 +1,7 @@
 import os
 from subprocess import PIPE, run
 from celery import shared_task
-from .models import log
+from .models import log, configure_experiment_filesystem
 from .k8s import job_create, job_stop, job_status
 
 
@@ -12,7 +12,8 @@ def request_status(status):
 @shared_task()
 def runExperiment_task(id):
     try:
-        status, response = job_create(id, id, 0, '/mnt/{}'.format(id))
+        base_path = configure_experiment_filesystem("/mnt", id)
+        status, response = job_create(id, id, 0, base_path)
         log("experiment_run", id, request_status(status), repr(response))
     except Exception as ex:
         log("experiment_run", id, request_status(False), repr(ex))

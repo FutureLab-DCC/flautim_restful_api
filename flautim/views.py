@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from django.http import JsonResponse
-from .models import log, logs_collection
+from .models import log, logs_collection, configure_experiment_filesystem
 import os
 import subprocess
 from flautim.tasks import runExperiment_task, stopExperiment_task, statusExperiment_task, deleteExperiment_task, statusExperiment_synchronous

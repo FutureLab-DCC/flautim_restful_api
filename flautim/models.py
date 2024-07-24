@@ -15,52 +15,53 @@ def log(object_type, id, message, details=None):
             "details" : details, "object":object_type, "object_id":id 
             }
         )
-    
-def get_experiment_files(base_path, id):
+
+
+def configure_experiment_filesystem(base_path, id):
     experiments = get_db_handle()['experimento']
     projects = get_db_handle()['projeto']
     models = get_db_handle()['modelo']
     datasets = get_db_handle()['datasets']
     attachments = get_db_handle()['Attachments']
 
-    experiment = experiments.find({"id": id})
+    experiment = experiments.find({"_id": id})
 
-    project = projects.find({"id" : experiment["projectId"]})
+    project = projects.find({"_id" : experiment["projectId"]})
 
     base_folder = "{}/{}/{}/".format(base_path, project["sigla"], experiment["acronym"])
 
     check_dir(base_folder)
 
     for file_id in experiment["hyperparameterFile"]:
-        file = attachments.find({"id" : file_id})
+        file = attachments.find({"_id" : file_id})
         copy_file(file["path"], "{}{}".format(base_folder, file["name"]))
 
     for file_id in experiment["apiFile"]:
-        file = attachments.find({"id" : file_id})
+        file = attachments.find({"_id" : file_id})
         copy_file(file["path"], "{}{}".format(base_folder, file["name"]))
 
     model = models.find({"id" : experiment["modelId"]})
 
     for file_id in model["archiveModel"]:
-        file = attachments.find({"id" : file_id})
+        file = attachments.find({"_id" : file_id})
         copy_file(file["path"], "{}model/{}".format(base_folder, file["name"]))
 
-    dataset = datasets.find({"id" : experiment["datasetId"]})
+    dataset = datasets.find({"_id" : experiment["datasetId"]})
 
     for file_id in dataset["files"]:
-        file = attachments.find({"id" : file_id})
+        file = attachments.find({"_id" : file_id})
         copy_file(file["path"], "{}data/{}".format(base_folder, file["name"]))
 
 
     return base_folder
 
 
-
-
 def check_dir(path):
     p = Path(path)
     if not p.exists():
         p.mkdir(parents=True)
+    # TODO: chown nobody:nogroup
+
 
 def copy_file(path_from, path_to):
     pt = Path(path_to)
