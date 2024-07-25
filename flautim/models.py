@@ -24,7 +24,7 @@ def configure_experiment_filesystem(base_path, id):
     datasets = get_db_handle()['datasets']
     attachments = get_db_handle()['Attachments']
 
-    experiment = experiments.find({"_id": id})
+    experiment = experiments.find({"_id": id}).next()
 
     if experiment is None:
         raise Exception("Experiment ID does not exists")
