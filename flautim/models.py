@@ -38,11 +38,11 @@ def configure_experiment_filesystem(base_path, id):
     check_dir(base_folder)
 
     for file_id in experiment["hyperparameterFile"]:
-        file = attachments.find({"_id" : file_id})
+        file = attachments.find({"_id" : file_id}).next()
         copy_file(file["path"], "{}{}".format(base_folder, file["name"]))
 
     for file_id in experiment["apiFile"]:
-        file = attachments.find({"_id" : file_id})
+        file = attachments.find({"_id" : file_id}).next()
         copy_file(file["path"], "{}{}".format(base_folder, file["name"]))
 
     model = models.find({"id" : experiment["modelId"]}).next()
@@ -50,7 +50,7 @@ def configure_experiment_filesystem(base_path, id):
     if not model is None:
 
         for file_id in model["archiveModel"]:
-            file = attachments.find({"_id" : file_id})
+            file = attachments.find({"_id" : file_id}).next()
             copy_file(file["path"], "{}model/{}".format(base_folder, file["name"]))
 
     dataset = datasets.find({"_id" : experiment["datasetId"]}).next()
@@ -58,7 +58,7 @@ def configure_experiment_filesystem(base_path, id):
     if not dataset is None:
 
         for file_id in dataset["files"]:
-            file = attachments.find({"_id" : file_id})
+            file = attachments.find({"_id" : file_id}).next()
             copy_file(file["path"], "{}data/{}".format(base_folder, file["name"]))
 
 
