@@ -45,7 +45,7 @@ def configure_experiment_filesystem(base_path, id):
         file = attachments.find({"_id" : file_id}).next()
         copy_file(file["path"], "{}{}".format(base_folder, file["name"]), related_to=id)
 
-    model = models.find({"id" : experiment["modelId"]}).next()
+    model = models.find({"_id" : experiment["modelId"]}).next()
 
     #if not model is None:
 
@@ -88,6 +88,7 @@ def copy_file(path_from, path_to, related_to=None):
     except FileNotFoundError:
         log("filesystem.file", related_to, "File {} does not exists".format(path_from), repr(ex))
         raise ex
+    
     except Exception as ex:
         log("filesystem.file", related_to, "Unable to copy file {} to {}".format(path_from, path_to), repr(ex))
         raise ex
