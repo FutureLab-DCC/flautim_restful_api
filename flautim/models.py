@@ -26,9 +26,14 @@ def configure_experiment_filesystem(base_path, id):
 
     experiment = experiments.find({"_id": id})
 
-    project = projects.find({"_id" : experiment["projectId"]})
+    if experiment is None:
+        raise Exception("Experiment ID does not exists")
 
-    base_folder = "{}/{}/{}/".format(base_path, project["sigla"], experiment["acronym"])
+    project = projects.find({"_id" : experiment["projectId"]}).next()
+
+    _sigla = project["sigla"] if not project is None else experiment["acronym"] 
+
+    base_folder = "{}/{}/{}/".format(base_path, _sigla, experiment["acronym"])
 
     check_dir(base_folder)
 
@@ -40,17 +45,21 @@ def configure_experiment_filesystem(base_path, id):
         file = attachments.find({"_id" : file_id})
         copy_file(file["path"], "{}{}".format(base_folder, file["name"]))
 
-    model = models.find({"id" : experiment["modelId"]})
+    model = models.find({"id" : experiment["modelId"]}).next()
 
-    for file_id in model["archiveModel"]:
-        file = attachments.find({"_id" : file_id})
-        copy_file(file["path"], "{}model/{}".format(base_folder, file["name"]))
+    if not model is None:
 
-    dataset = datasets.find({"_id" : experiment["datasetId"]})
+        for file_id in model["archiveModel"]:
+            file = attachments.find({"_id" : file_id})
+            copy_file(file["path"], "{}model/{}".format(base_folder, file["name"]))
 
-    for file_id in dataset["files"]:
-        file = attachments.find({"_id" : file_id})
-        copy_file(file["path"], "{}data/{}".format(base_folder, file["name"]))
+    dataset = datasets.find({"_id" : experiment["datasetId"]}).next()
+
+    if not dataset is None:
+
+        for file_id in dataset["files"]:
+            file = attachments.find({"_id" : file_id})
+            copy_file(file["path"], "{}data/{}".format(base_folder, file["name"]))
 
 
     return base_folder
