@@ -7,10 +7,8 @@ import shutil
 logs_collection = get_db_handle()['logs']
 
 def log(object_type, id, message, details=None):
-    #_id = str(ObjectId())
     logs_collection.insert_one(
         {
-            #"_id": _id, 
             "timestamp": str(datetime.now()), "message": message, 
             "details" : details, "object":object_type, "object_id":id 
             }
@@ -36,6 +34,8 @@ def configure_experiment_filesystem(base_path, id):
     base_folder = "{}/{}/{}/".format(base_path, _sigla, experiment["acronym"])
 
     check_dir(base_folder)
+    check_dir("{}{}".format(base_folder,"data"))
+    check_dir("{}{}".format(base_folder,"models"))
 
     for file_id in experiment["hyperparameterFile"]:
         file = attachments.find({"_id" : file_id}).next()
@@ -51,7 +51,7 @@ def configure_experiment_filesystem(base_path, id):
 
         for file_id in model["archiveModel"]:
             file = attachments.find({"_id" : file_id}).next()
-            copy_file(file["path"], "{}model/{}".format(base_folder, file["name"]))
+            copy_file(file["path"], "{}{}".format(base_folder, file["name"]))
 
     dataset = datasets.find({"_id" : experiment["datasetId"]}).next()
 
@@ -59,7 +59,10 @@ def configure_experiment_filesystem(base_path, id):
 
         for file_id in dataset["files"]:
             file = attachments.find({"_id" : file_id}).next()
-            copy_file(file["path"], "{}data/{}".format(base_folder, file["name"]))
+            if file["extension"] == "py":
+                copy_file(file["path"], "{}{}".format(base_folder, file["name"]))
+            else:
+                copy_file(file["path"], "{}data/{}".format(base_folder, file["name"]))
 
 
     return base_folder
