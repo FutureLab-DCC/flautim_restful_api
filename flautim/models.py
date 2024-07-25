@@ -47,22 +47,22 @@ def configure_experiment_filesystem(base_path, id):
 
     model = models.find({"id" : experiment["modelId"]}).next()
 
-    if not model is None:
+    #if not model is None:
 
-        for file_id in model["archiveModel"]:
-            file = attachments.find({"_id" : file_id}).next()
-            copy_file(file["path"], "{}{}".format(base_folder, file["name"]), related_to=id)
+    for file_id in model["archiveModel"]:
+        file = attachments.find({"_id" : file_id}).next()
+        copy_file(file["path"], "{}{}".format(base_folder, file["name"]), related_to=id)
 
     dataset = datasets.find({"_id" : experiment["datasetId"]}).next()
 
-    if not dataset is None:
+    #if not dataset is None:
 
-        for file_id in dataset["files"]:
-            file = attachments.find({"_id" : file_id}).next()
-            if file["extension"] == "py":
-                copy_file(file["path"], "{}{}".format(base_folder, file["name"]), related_to=id)
-            else:
-                copy_file(file["path"], "{}data/{}".format(base_folder, file["name"]), related_to=id)
+    for file_id in dataset["files"]:
+        file = attachments.find({"_id" : file_id}).next()
+        if file["extension"] == "py":
+            copy_file(file["path"], "{}{}".format(base_folder, file["name"]), related_to=id)
+        else:
+            copy_file(file["path"], "{}data/{}".format(base_folder, file["name"]), related_to=id)
 
 
     return base_folder
@@ -82,9 +82,13 @@ def check_dir(path, related_to=None):
 def copy_file(path_from, path_to, related_to=None):
     try:
         pt = Path(path_to)
-        if not pt.exists():
+        if pt.exists():
             pt.unlink()
         shutil.copy(path_from, path_to)
+    except FileNotFoundError:
+        log("filesystem.file", related_to, "File {} does not exists".format(path_from), repr(ex))
+        raise ex
     except Exception as ex:
         log("filesystem.file", related_to, "Unable to copy file {} to {}".format(path_from, path_to), repr(ex))
         raise ex
+    
