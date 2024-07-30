@@ -90,22 +90,28 @@ def job_create(job_name, id_experiment, user, path):
 
     # Define the Job metadata
     metadata = client.V1ObjectMeta(name=job_name)
+
+    command_sequence = f"""
+    pip3 install --force-reinstall git+https://github.com/FutureLab-DCC/flautim_api.git
+    python3 run.py --IDexperiment {id_experiment} --user {str(user)} --path {path} --dbserver {dbip} --dbuser {urllib.parse.quote_plus(dbuser)} --dbpw {urllib.parse.quote_plus(dbpw)} --dbport {str(dbport)}
+    """
     
     # Define the container
     container = client.V1Container(
         name="mnist-trainer-job",
         image=image,
         working_dir = path,
-        command=["python3","run.py"],
-        args=[
-            "--IDexperiment", id_experiment,
-            "--user", str(user),
-            "--path", path,
-            "--dbserver", dbip,
-            "--dbuser", urllib.parse.quote_plus(dbuser),
-            "--dbpw", urllib.parse.quote_plus(dbpw),
-            "--dbport", str(dbport)
-        ],
+        command=['/bin/sh', '-c', command_sequence],
+        #command=["python3","run.py"],
+        #args=[
+        #    "--IDexperiment", id_experiment,
+        #    "--user", str(user),
+        #    "--path", path,
+        #    "--dbserver", dbip,
+        #    "--dbuser", urllib.parse.quote_plus(dbuser),
+        #    "--dbpw", urllib.parse.quote_plus(dbpw),
+        #    "--dbport", str(dbport)
+        #],
         
         image_pull_policy="Always",
         volume_mounts=[
