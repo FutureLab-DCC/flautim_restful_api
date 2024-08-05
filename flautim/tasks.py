@@ -12,7 +12,7 @@ def request_status(status):
 @shared_task()
 def runExperiment_task(id):
     try:
-        base_path = configure_experiment_filesystem("/mnt", id)
+        base_path = configure_experiment_filesystem(id)
         status, response = job_create(id, id, 0, base_path)
         log("experiment_run", id, request_status(status), repr(response))
     except Exception as ex:
