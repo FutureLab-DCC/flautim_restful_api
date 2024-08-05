@@ -1,5 +1,5 @@
 from django.db import models
-from utils import get_db_handle
+from utils import get_db_handle, read_config
 from datetime import datetime
 from pathlib import Path
 import shutil
@@ -14,8 +14,16 @@ def log(object_type, id, message, details=None):
             }
         )
 
+config = read_config('filesystem')
 
-def configure_experiment_filesystem(base_path, id):
+BASE_PATH = config['base']
+WEB_UPLOADS_FOLDER = config['web_uploads_folder']
+REST_UPLOADS_FOLDER = config['rest_uploads_folder']
+
+def map_paths(path):
+    return path.replace(WEB_UPLOADS_FOLDER, REST_UPLOADS_FOLDER)
+
+def configure_experiment_filesystem(id):
     experiments = get_db_handle()['experimento']
     projects = get_db_handle()['projeto']
     models = get_db_handle()['modelo']
@@ -31,7 +39,7 @@ def configure_experiment_filesystem(base_path, id):
 
     _sigla = project["sigla"] if not project is None else experiment["acronym"] 
 
-    base_folder = "{}/{}/{}/".format(base_path, _sigla, experiment["acronym"])
+    base_folder = "{}/{}/{}/".format(BASE_PATH, _sigla, experiment["acronym"])
 
     check_dir(base_folder, related_to=id)
     check_dir("{}{}".format(base_folder,"data"), related_to=id)
@@ -39,30 +47,26 @@ def configure_experiment_filesystem(base_path, id):
 
     for file_id in experiment["hyperparameterFile"]:
         file = attachments.find({"_id" : file_id}).next()
-        copy_file(file["path"], "{}{}".format(base_folder, file["name"]), related_to=id)
+        copy_file(map_paths(file["path"]), "{}{}".format(base_folder, file["name"]), related_to=id)
 
     for file_id in experiment["apiFile"]:
         file = attachments.find({"_id" : file_id}).next()
-        copy_file(file["path"], "{}{}".format(base_folder, file["name"]), related_to=id)
+        copy_file(map_paths(file["path"]), "{}{}".format(base_folder, file["name"]), related_to=id)
 
     model = models.find({"_id" : experiment["modelId"]}).next()
 
-    #if not model is None:
-
     for file_id in model["archiveModel"]:
         file = attachments.find({"_id" : file_id}).next()
-        copy_file(file["path"], "{}{}".format(base_folder, file["name"]), related_to=id)
+        copy_file(map_paths(file["path"]), "{}{}".format(base_folder, file["name"]), related_to=id)
 
     dataset = datasets.find({"_id" : experiment["datasetId"]}).next()
-
-    #if not dataset is None:
 
     for file_id in dataset["files"]:
         file = attachments.find({"_id" : file_id}).next()
         if file["extension"] == "py":
-            copy_file(file["path"], "{}{}".format(base_folder, file["name"]), related_to=id)
+            copy_file(map_paths(file["path"]), "{}{}".format(base_folder, file["name"]), related_to=id)
         else:
-            copy_file(file["path"], "{}data/{}".format(base_folder, file["name"]), related_to=id)
+            copy_file(map_paths(file["path"]), "{}data/{}".format(base_folder, file["name"]), related_to=id)
 
 
     return base_folder

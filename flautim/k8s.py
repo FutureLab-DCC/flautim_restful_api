@@ -1,15 +1,8 @@
 from kubernetes import client, config
 import yaml
 import urllib.parse
+from utils import read_config
 
-
-def read_config(name):
-    with open('config.yaml') as f:
-        try: 
-            cfg = yaml.safe_load(f)[name]
-            return cfg
-        except Exception as ex:
-            raise ex
         
 def get_k8s_config():
     return read_config('kubernetes')

@@ -1,11 +1,15 @@
 mongodb:
-  host: 127.0.0.1
+  host: 192.168.7.161
   port: 27017
   username: flautim
-  password: -------
+  password: #######
   db: flautim
 kubernetes:
-  config_path: '~/.kube/config'
+  config_path: '/var/www/flautim/config'
   namespace: default
-  pvc: my-pvc-nfs
-  image: 'sufex00/flautin:trainer-0.1'
+  pvc: nfs-pvc
+  image: '192.168.7.161:5000/experiments:0.1'
+filesystem:
+  base: '/mnt/'
+  web_uploads_folder: '/home/webapp/bundle/programs/uploads/'
+  rest_uploads_folder: '/mnt/uploads/'
