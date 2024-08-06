@@ -69,7 +69,7 @@ def configure_experiment_filesystem(id):
             copy_file(map_paths(file["path"]), "{}data/{}".format(base_folder, file["name"]), related_to=id)
 
 
-    return base_folder
+    return base_folder, experiment["acronym"].lower()
 
 
 def check_dir(path, related_to=None):
