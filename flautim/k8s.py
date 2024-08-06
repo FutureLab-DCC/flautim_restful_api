@@ -156,6 +156,6 @@ def job_create(job_name, id_experiment, user, path):
         return True, response
 
     except client.exceptions.ApiException as e:
-        return False, repr(e)
+        return False, repr(e) + ":" + e.reason
     except Exception as e:
         return False, repr(e)

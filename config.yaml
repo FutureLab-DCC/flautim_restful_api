@@ -10,6 +10,6 @@ kubernetes:
   pvc: nfs-pvc
   image: '192.168.7.161:5000/experiments:0.1'
 filesystem:
-  base: '/mnt/'
+  base: '/mnt'
   web_uploads_folder: '/home/webapp/bundle/programs/uploads/'
   rest_uploads_folder: '/mnt/uploads/'
