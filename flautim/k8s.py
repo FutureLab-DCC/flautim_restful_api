@@ -1,4 +1,5 @@
 from kubernetes import client, config
+from kubernetes.client.exceptions import ApiException, ApiValueError  
 import yaml
 import urllib.parse
 from utils import read_config
@@ -30,8 +31,8 @@ def job_status(job_name):
 
         return True, status
 
-    except client.exceptions.ApiException as e:
-        return False, repr(e)
+    except (ApiException, ApiValueError) as e:
+        return False, str(e)
     except Exception as e:
         return False, repr(e)
         
@@ -59,8 +60,8 @@ def job_stop(job_name):
         )
         return True, response
 
-    except client.exceptions.ApiException as e:
-        return False, repr(e)
+    except (ApiException, ApiValueError) as e:
+        return False, str(e)
     except Exception as e:
         return False, repr(e)
 
@@ -155,9 +156,7 @@ def job_create(job_name, id_experiment, user, path):
         )
         return True, response
 
-    except client.exceptions.ApiException as e:
-        return False, str(e)
-    except client.exceptions.ApiValueError as e:
+    except (ApiException, ApiValueError) as e:
         return False, str(e)
     except Exception as e:
         return False, repr(e)

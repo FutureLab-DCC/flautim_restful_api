@@ -20,3 +20,5 @@ def get_db_handle():
                          )
     db_handle = client[config['db']]
     return db_handle
+
+

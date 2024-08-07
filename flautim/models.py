@@ -23,6 +23,22 @@ REST_UPLOADS_FOLDER = config['rest_uploads_folder']
 def map_paths(path):
     return path.replace(WEB_UPLOADS_FOLDER, REST_UPLOADS_FOLDER)
 
+
+def get_job_name(id):
+    experiments = get_db_handle()['experimento']
+    experiment = experiments.find({"_id": id}).next()
+    if experiment is None:
+        raise Exception("Experiment ID does not exists")
+    return experiment["acronym"].lower()
+
+
+def update_experiment_status(id, status):
+    filter = { '_id': id }
+    newvalues = { "$set": { 'status': status } }
+    experiments = get_db_handle()['experimento']
+    experiments.update_one(filter, newvalues)
+
+
 def configure_experiment_filesystem(id):
     experiments = get_db_handle()['experimento']
     projects = get_db_handle()['projeto']
