@@ -66,7 +66,7 @@ def job_stop(job_name):
         return False, repr(e)
 
 
-def job_create(job_name, id_experiment, user, path):
+def job_create(job_name, id_experiment, user, path, output_path):
     # Load the specified kubeconfig file
     cfg = get_k8s_config()
     kubeconfig_path = cfg['config_path']
@@ -87,7 +87,7 @@ def job_create(job_name, id_experiment, user, path):
 
     command_sequence = f"""
     pip3 install --force-reinstall git+https://github.com/FutureLab-DCC/flautim_api.git
-    python3 run.py --IDexperiment {id_experiment} --user {str(user)} --path {path} --dbserver {dbip} --dbuser {urllib.parse.quote_plus(dbuser)} --dbpw {urllib.parse.quote_plus(dbpw)} --dbport {str(dbport)}
+    python3 run.py --IDexperiment {id_experiment} --user {str(user)} --path {path} --output-path {output_path} --dbserver {dbip} --dbuser {urllib.parse.quote_plus(dbuser)} --dbpw {urllib.parse.quote_plus(dbpw)} --dbport {str(dbport)}
     """
     
     # Define the container

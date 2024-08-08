@@ -23,7 +23,6 @@ REST_UPLOADS_FOLDER = config['rest_uploads_folder']
 def map_paths(path):
     return path.replace(WEB_UPLOADS_FOLDER, REST_UPLOADS_FOLDER)
 
-
 def get_job_name(id):
     experiments = get_db_handle()['experimento']
     experiment = experiments.find({"_id": id}).next()
@@ -56,6 +55,7 @@ def configure_experiment_filesystem(id):
     _sigla = project["sigla"] if not project is None else experiment["acronym"] 
 
     base_folder = "{}/{}/{}/".format(BASE_PATH, _sigla, experiment["acronym"])
+    output_folder = "{}{}/experiment_{}/".format(REST_UPLOADS_FOLDER, _sigla, experiment["acronym"])
 
     check_dir(base_folder, related_to=id)
     check_dir("{}{}".format(base_folder,"data"), related_to=id)
@@ -85,7 +85,7 @@ def configure_experiment_filesystem(id):
             copy_file(map_paths(file["path"]), "{}data/{}".format(base_folder, file["name"]), related_to=id)
 
 
-    return base_folder, experiment["acronym"].lower()
+    return base_folder, output_folder, experiment["acronym"].lower()
 
 
 def check_dir(path, related_to=None):
